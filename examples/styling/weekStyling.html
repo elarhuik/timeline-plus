@@ -4,8 +4,8 @@
     <title>Timeline | Grid styling</title>
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js"></script>
-    <script src="../../dist/timeline.js"></script>
-    <link href="../../dist/timeline.min.css" rel="stylesheet" type="text/css"/>
+    <script src="https://unpkg.com/timeline-plus/dist/timeline.js"></script>
+    <link href="https://unpkg.com/timeline-plus/dist/timeline.css" rel="stylesheet" type="text/css"/>
 
     <style type="text/css">
         body, html {
@@ -58,14 +58,20 @@
 <div id="visualization"></div>
 
 <script type="text/javascript">
-    var itemCount = 26;
+    var itemCount = 10;
 
     // DOM element where the Timeline will be attached
     var container = document.getElementById('visualization');
 
     // just a group for the effects
     var groups = new timeline.DataSet();
-    groups.add([{id: 1, content: "ISO Weeks"}, {id: 2, content: "US Weeks"}]);
+    groups.add([
+        {id: 1, content: "Project 1"},
+        {id: 2, content: "Project 2"},
+        {id: 3, content: "Project 3"},
+        {id: 4, content: "Project 4"},
+        {id: 5, content: "Project 5"},
+    ]);
 
     // Create a DataSet (allows two way data-binding)
     var items = new timeline.DataSet();
@@ -96,7 +102,7 @@
     for (var j = 0; j < itemCount; j++) {
         var DEweekNumber = DEdate.format('w');
         var DEweekStart = DEdate.format();
-        var DEweekEnd = DEdate.add(1, 'week').format();
+        var DEweekEnd = DEdate.add(j, 'day').format();
         items.add({
             id: itemCount + j,
             group: 1,
@@ -109,13 +115,18 @@
     // Configuration for the Timeline
     var options = {
       locale: 'de',
+      min: moment('2015-01-01'),
+      max: moment('2030-01-01'),
       timeAxis: {
-        scale: 'week',
+        scale: 'month',
         step: 1
       },
       format: {
         minorLabels: {week: 'w'}
-      }
+      },
+      orientation: {
+          axis: 'top',
+      }  
     };
 
     // Create a Timeline
