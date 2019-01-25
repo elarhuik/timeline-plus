@@ -21,37 +21,13 @@
 </head>
 <body>
 
-<p>
-    Week numbers are calculated based on locales. For this to properly work, the timeline must be loaded with a version
-    of moment.js including locales.</p>
-<p>To set a locale for the timeline, specify the option
-    <code>{locale: STRING}</code>.</p>
-<p>
-  To set the scale to use week numbers, use the following options:
-  <code>
-    {
-      timeAxis: {
-        scale: 'week',
-        step: 1
-      },
-      format: {
-        minorLabels: {week: 'w'}
-      }
-    }
-  </code>
-</p>
 
-<p>The following timeline is initialized with the 'de' locale and items are added with locally localized moment.js
-    objects. The timeline locale can be switched to another locale at runtime. If you choose the 'en' locale, the week
-    numbers will be calculated according to the US week calendar numbering scheme.</p>
-
-<p>
     <label for="locale">Select a locale:</label>
     <select id="locale">
-        <option value="en">en</option>
+        <option value="en" selected>en</option>
         <option value="it">it</option>
         <option value="nl">nl</option>
-        <option value="de" selected>de</option>
+        <option value="de" >de</option>
     </select>
 </p>
 
@@ -90,9 +66,9 @@
         items.add({
             id: i,
             group: 2,
-            content: 'US week ' + USweekNumber,
+            content: 'Weeklong event ' + USweekNumber,
             start: USweekStart,
-            end: USweekEnd
+            end: moment(USweekEnd).subtract(1, 'day').format(),
         });
     }
 
@@ -102,13 +78,14 @@
     for (var j = 0; j < itemCount; j++) {
         var DEweekNumber = DEdate.format('w');
         var DEweekStart = DEdate.format();
-        var DEweekEnd = DEdate.add(j, 'day').format();
+        var DEweekEnd = DEdate.add(1, 'month').format();
+        console.log(DEweekEnd);
         items.add({
             id: itemCount + j,
             group: 1,
-            content: 'ISO week ' + DEweekNumber,
+            content: 'Monthly event ' + DEweekNumber,
             start: DEweekStart,
-            end: DEweekEnd
+            end: moment(DEweekEnd).subtract(3, 'day').format(),
         });
     }
 
@@ -117,10 +94,9 @@
       locale: 'de',
       min: moment('2015-01-01'),
       max: moment('2030-01-01'),
-      timeAxis: {
-        scale: 'month',
-        step: 1
-      },
+      zoomMin: 1000 * 60 * 60 * 24,             // one day in milliseconds
+      zoomMax: 1000 * 60 * 60 * 24 * 31 * 24,     // about 24 months in milliseconds
+
       format: {
         minorLabels: {week: 'w'}
       },
@@ -134,10 +110,13 @@
 
     // update the locale when changing the select box value
     var select = document.getElementById('locale');
+    let ix = 1;
     select.onchange = function () {
+      
         timeline.setOptions({
-            locale: this.value
+            locale: this.value,
         });
+        ix += 1;
     };
     select.onchange();
 </script>
